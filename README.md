@@ -1,6 +1,7 @@
 # favadu.github.io
 
-This project provide my CV online:
+This project provide my CV online.
+
 English version:
 http://favadu.github.io/index_en.html
 
