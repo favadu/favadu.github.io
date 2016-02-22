@@ -67,11 +67,17 @@
         var dataAction =  $(this).attr('data-action');
         if (dataAction == 'show') {
             detailPart.addClass("in");
-            $(this).text('Moin détail');
+			if($(this).text() == 'Plus détail')
+				$(this).text('Moin détail');
+			else
+				$(this).text('Less Info');
             $(this).attr('data-action', 'hide');
         } else {
             detailPart.removeClass("in");
-            $(this).text('Plus détail');
+            if($(this).text() == 'Moin détail')
+				$(this).text('Plus détail');
+			else
+				$(this).text('More Info');
             $(this).attr('data-action', 'show');
 
         }
