@@ -101,7 +101,7 @@ function getCookie(cname) {
         }
         //event.preventDefault();
     });
-	if(getCookie("hasVisited") = "") {
+	if(getCookie("hasVisited") == "") {
 		$.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
 			$.ajax({
 				type : "post",
