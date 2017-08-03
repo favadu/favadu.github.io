@@ -4,6 +4,24 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+ function setSessionCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue + ";" + "path=/";
+}
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+ 
 (function($) {
     "use strict"; // Start of use strict
 
@@ -83,6 +101,23 @@
         }
         //event.preventDefault();
     });
+	if(getCookie("hasVisited") = "") {
+		$.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
+			$.ajax({
+				type : "post",
+				dataType : "JSON",
+				url : "https://script.google.com/macros/s/AKfycbzKPd2Cb5iVpXUHIGVIOOoRpKY8VxmzoOIVDhGWQHH2vuK9RjI/exec",
+				data : data,
+				success : function(object) {
+					setSessionCookie("hasVisited", true);
+				},
+				error : function(request) {
+				}
+			});
+		});
+		
+	}
+	
 
 
 })(jQuery); // End of use strict
