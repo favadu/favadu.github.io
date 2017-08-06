@@ -1,10 +1,9 @@
 /*!
- * Start Bootstrap - Creative Bootstrap Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
- function setSessionCookie(cname, cvalue) {
+function setSessionCookie(cname, cvalue) {
     document.cookie = cname + "=" + cvalue + ";" + "path=/";
 }
 function getCookie(cname) {
@@ -21,7 +20,23 @@ function getCookie(cname) {
     }
     return "";
 }
- 
+
+function delete_cookie(name) {
+  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+var lon = null;
+var lat = null;
+//Location
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+}
+function showPosition(position) {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude; 
+}
+var isLeavePage = true;
 (function($) {
     "use strict"; // Start of use strict
 
@@ -101,23 +116,55 @@ function getCookie(cname) {
         }
         //event.preventDefault();
     });
-	if(getCookie("hasVisited") == "") {
+
+	var visitData = null ;
+	var visitDataStr = getCookie("hasVisited");
+	
+	if(visitDataStr == "") {
 		$.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
+			data.state = "start";
+			visitData = data;
 			$.ajax({
 				type : "post",
 				dataType : "JSON",
 				url : "https://script.google.com/macros/s/AKfycbzKPd2Cb5iVpXUHIGVIOOoRpKY8VxmzoOIVDhGWQHH2vuK9RjI/exec",
-				data : data,
+				data : visitData,
 				success : function(object) {
-					setSessionCookie("hasVisited", true);
+					setSessionCookie("hasVisited", JSON.stringify(visitData));
 				},
 				error : function(request) {
 				}
 			});
 		});
 		
+	} else {
+		visitData = JSON.parse(visitDataStr);
 	}
 	
+	$(window).bind('beforeunload', function(){
+		if(isLeavePage) {
+			delete_cookie("hasVisited");
+			if(visitData != null) {
+				visitData.state = "end";
+				$.ajax({
+					type : "post",
+					dataType : "JSON",
+					url : "https://script.google.com/macros/s/AKfycbzKPd2Cb5iVpXUHIGVIOOoRpKY8VxmzoOIVDhGWQHH2vuK9RjI/exec",
+					data : visitData,
+					success : function(object) {
+					},
+					error : function(request) {
+					}
+				});
+			}
+	  }
+	  
+	  return undefined;
+	});
+	
+	$('#change-lang').click(function () {
+        isLeavePage = false;
+    });
 
 
 })(jQuery); // End of use strict
